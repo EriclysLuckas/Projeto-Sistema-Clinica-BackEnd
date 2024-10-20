@@ -6,7 +6,7 @@ Estrutura do Projeto
 A estrutura do projeto foi organizada para garantir uma separação clara das responsabilidades, facilitando a escalabilidade e a manutenção do código.
 
 Estrutura de Diretórios
-
+a
 nome-do-projeto/
 │
 ├── config/
