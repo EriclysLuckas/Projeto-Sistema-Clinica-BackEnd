@@ -1,126 +1,148 @@
-Projeto Node.js com MySQL
-Descrição
-Este projeto é uma API construída em Node.js utilizando Express para gerenciamento de usuários, com integração a um banco de dados MySQL. O objetivo é criar uma API que permita operações CRUD (Create, Read, Update, Delete) em um banco de dados de usuários, incluindo autenticação e controle de acesso.
+Aqui está o **README.md** formatado para que você possa colocá-lo diretamente no GitHub ou qualquer repositório Git. O formato utiliza markdown, que é amplamente suportado por plataformas de repositórios de código.
 
-Estrutura do Projeto
-A estrutura do projeto foi organizada para garantir uma separação clara das responsabilidades, facilitando a escalabilidade e a manutenção do código.
+---
 
-Estrutura de Diretórios
-a
+# Sistema de Gerenciamento de Consultas Médicas
+
+Este projeto é um sistema backend desenvolvido com **Node.js** e **PostgreSQL** que permite o gerenciamento de pacientes, médicos e consultas, com funcionalidades como cadastro de usuários, agendamento de consultas, autenticação e consulta de CID e bulas de medicamentos.
+
+## 📚 **Descrição do Projeto**
+
+O objetivo deste sistema é fornecer uma API que suporte as operações de:
+- Cadastro de pacientes e médicos.
+- Agendamento de consultas entre pacientes e médicos.
+- Consulta de códigos CID (Classificação Internacional de Doenças) e bulas de medicamentos.
+- Autenticação e controle de acesso com JWT.
+
+## 🛠️ **Tecnologias Utilizadas**
+
+- **Node.js**: Plataforma de execução de JavaScript no servidor.
+- **Express**: Framework minimalista para construir aplicações web e APIs.
+- **PostgreSQL**: Banco de dados relacional.
+- **pg**: Cliente oficial para conectar ao PostgreSQL com Node.js.
+- **dotenv**: Gerenciamento de variáveis de ambiente.
+- **JWT**: Para autenticação baseada em tokens.
+- **Nodemailer**: (Opcional) Envio de e-mails de notificação.
+
+## 📁 **Estrutura do Projeto**
+
+```bash
 nome-do-projeto/
 │
 ├── config/
-│   └── database.js        # Configuração da conexão com o banco de dados (MySQL)
+│   └── database.js        # Configuração da conexão com o banco de dados PostgreSQL
 │
-├── controllers/           # Controladores que tratam as regras de negócio
-│   └── userController.js
+├── controllers/           # Controladores para lógica de negócio
+│   └── userController.js  # Controlador para os usuários (pacientes e médicos)
+│   └── appointmentController.js  # Controlador para o agendamento de consultas
 │
 ├── routes/                # Definição das rotas da aplicação
-│   └── userRoutes.js
+│   └── userRoutes.js      # Rotas para o CRUD de usuários
+│   └── appointmentRoutes.js # Rotas para o agendamento de consultas
 │
-├── middlewares/           # Funções que lidam com validações ou autenticações
-│   └── authMiddleware.js
+├── middlewares/           # Funções que lidam com validação e autenticação
+│   └── authMiddleware.js  # Middleware para autenticação JWT
 │
-├── services/              # Serviços para integração com outros sistemas ou APIs
-│   └── emailService.js
+├── services/              # Serviços para integrações externas (como envio de e-mails)
+│   └── emailService.js    # Serviço de e-mail (opcional para notificações)
 │
-├── .env                   # Arquivo para variáveis de ambiente (configurações sensíveis)
+├── .env                   # Arquivo para variáveis de ambiente
 │
-├── .gitignore             # Arquivos e pastas que serão ignorados pelo Git
+├── .gitignore             # Arquivos e pastas a serem ignorados pelo Git
 │
 ├── package.json           # Informações sobre dependências e scripts do projeto
 │
-├── server.js              # Arquivo principal que inicializa o servidor Express
+├── server.js              # Arquivo principal para iniciar o servidor Express
 │
 └── README.md              # Documentação do projeto
+```
+
+## 🚀 **Como Executar o Projeto**
+
+Siga os passos abaixo para rodar o projeto localmente:
+
+1. Clone o repositório:
+
+   ```bash
+   git clone https://github.com/seu-usuario/nome-do-projeto.git
+   ```
+
+2. Instale as dependências:
+
+   ```bash
+   npm install
+   ```
+
+3. Configure o arquivo `.env` na raiz do projeto com suas credenciais do banco de dados PostgreSQL:
+
+   ```bash
+   DB_HOST=localhost
+   DB_USER=seu-usuario
+   DB_PASSWORD=sua-senha
+   DB_NAME=nome-do-banco
+   DB_PORT=5432
+   JWT_SECRET=sua-chave-secreta
+   ```
+
+4. Inicie o servidor:
+
+   ```bash
+   npm start
+   ```
+
+O servidor estará rodando em `http://localhost:3000`.
+
+## 🌟 **Funcionalidades Principais**
+
+1. **Cadastro de Pacientes e Médicos**: Criação, edição e exclusão de usuários.
+2. **Agendamento de Consultas**: Pacientes podem agendar consultas com médicos.
+3. **Consulta CID e Bula de Medicamentos**: Médicos podem consultar códigos CID e bulas de medicamentos via APIs externas.
+4. **Autenticação JWT**: Controle de acesso seguro usando tokens.
+
+## 📜 **Casos de Uso**
+
+1. **Cadastro de Paciente**: Um administrador ou paciente pode cadastrar um paciente no sistema.
+2. **Cadastro de Médico**: Um administrador pode cadastrar médicos, incluindo validação de CRM.
+3. **Agendamento de Consulta**: Paciente ou administrador pode agendar consultas médicas.
+4. **Consulta CID**: Médicos autenticados podem consultar o código CID de doenças.
+5. **Consulta de Bula**: Médicos ou pacientes autenticados podem consultar bulas de medicamentos via API externa.
+
+## 🔧 **Divisão das Atribuições**
+
+A equipe foi dividida da seguinte maneira para facilitar o desenvolvimento:
+
+### **Pessoa 1: Cadastro de Pacientes e Médicos**
+- Implementar CRUD de pacientes e médicos.
+- Validação de CPF e CRM.
+- Rotas para cadastro, edição e exclusão de usuários.
+
+### **Pessoa 2: Agendamento de Consultas**
+- Implementar a lógica de agendamento no `appointmentController.js`.
+- Garantir que não haja sobreposição de horários de consultas.
+- Enviar notificações por e-mail após o agendamento (opcional).
+
+### **Pessoa 3: Autenticação e Controle de Acesso**
+- Implementar autenticação com JWT no `authMiddleware.js`.
+- Controlar o acesso às rotas protegidas.
+- Verificar permissões de usuários.
+
+### **Pessoa 4: Consulta de CID e Bula de Medicamentos**
+- Conectar com APIs externas para consulta de CID e bulas.
+- Criar rotas para médicos e pacientes consultarem essas informações.
+
+### **Pessoa 5: Serviço de Envio de E-mails (Opcional)**
+- Criar o serviço de envio de e-mails no `emailService.js`.
+- Integrar o serviço ao agendamento de consultas.
+- Testar e configurar corretamente as notificações por e-mail.
+
+### **Pessoa 6: Testes e Integração**
+- Testar a integração dos módulos (cadastro, agendamento, autenticação).
+- Garantir que todas as funcionalidades estejam funcionando corretamente.
+- Testes automatizados de integração.
 
 
-Descrição das Pastas e Arquivos
+Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para obter mais informações.
 
-config/:
-Esta pasta contém a configuração do banco de dados. O arquivo database.js é responsável por estabelecer a conexão com o banco de dados MySQL, utilizando as credenciais definidas no arquivo .env.
+---
 
-controllers/:
-Os controladores contêm a lógica de negócio da aplicação. Eles lidam com as requisições HTTP, interagem com o banco de dados e retornam as respostas adequadas para o cliente. Por exemplo, o userController.js define as funções para criar, listar, atualizar e deletar usuários.
-routes/:
-
-Aqui ficam definidas as rotas da aplicação. Cada rota mapeia um endpoint da API para uma função no controlador. O arquivo userRoutes.js define os endpoints relacionados à entidade user (usuário).
-
-middlewares/:
-Middlewares são funções que interceptam requisições antes de chegarem aos controladores. O arquivo authMiddleware.js contém, por exemplo, validações de autenticação e permissões.
-
-services/:
-Serviços são responsáveis por funcionalidades externas ou complexas, como envio de e-mails, integração com outros sistemas ou APIs. O emailService.js pode ser usado para enviar notificações via e-mail.
-
-.env:
-Arquivo que contém variáveis de ambiente, como credenciais de banco de dados, porta da aplicação, etc. Este arquivo não deve ser versionado pelo Git por questões de segurança.
-.gitignore:
-
-Arquivo que define quais arquivos e pastas devem ser ignorados pelo Git, como node_modules/ e o próprio .env.
-
-package.json:
-Arquivo que contém as dependências do projeto, scripts de execução e outras configurações importantes do projeto Node.js.
-
-server.js:
-Arquivo principal que inicializa o servidor Express, define middlewares globais, configura as rotas e estabelece a conexão com o banco de dados.
-
-Como Executar:
-Clone este repositório:
-git clone https://github.com/seu-usuario/nome-do-projeto.git
-
-Instale as dependências:
-npm install
-
-Crie um arquivo .env na raiz do projeto e defina as variáveis de ambiente:
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=sua-senha
-DB_NAME=nome-do-banco
-PORT=3000
-
-Inicie o servidor:
-npm start
-
-O servidor estará rodando em http://localhost:3000.
-
-Divisão das Funções para 6 Pessoas
-Aqui está a divisão das funções para a equipe de 6 pessoas, cobrindo os principais componentes do backend.
-
-Pessoa 1: Configuração do Banco de Dados
-Responsável pela criação e configuração da conexão MySQL no arquivo config/database.js.
-Definir variáveis de ambiente relacionadas ao banco de dados.
-Criar e manter o script de criação de tabelas.
-
-
-Pessoa 2: Rotas
-Configurar todas as rotas da API em routes/.
-Trabalhar junto com os controladores para garantir que as rotas estejam funcionando corretamente.
-Implementar o roteamento de rotas protegidas e públicas.
-
-
-Pessoa 3: Controlador de Usuários
-Criar o arquivo userController.js dentro da pasta controllers/.
-Implementar as funções CRUD (criar, ler, atualizar e deletar usuários) e validar os dados de entrada.
-
-
-Pessoa 4: Middleware de Autenticação
-Desenvolver o middleware de autenticação JWT no arquivo middlewares/authMiddleware.js.
-Garantir que apenas usuários autenticados possam acessar rotas protegidas.
-Validar permissões de usuários (admin ou usuário comum) em certas rotas.
-
-
-Pessoa 5: Serviço de E-mail (Opcional)
-Implementar o serviço de envio de e-mails dentro de services/emailService.js.
-Integrar a funcionalidade de envio de e-mails para notificações, como confirmação de cadastro ou agendamentos.
-
-
-Pessoa 6: Integração Geral e Testes
-Coordenar a integração entre as diferentes funcionalidades do sistema.
-Garantir que todos os módulos funcionem juntos corretamente.
-Escrever e executar testes básicos para verificar a funcionalidade da API.
-
-
-
-
-
-
+Agora, com este **README.md** formatado, basta copiar o conteúdo e colá-lo no arquivo `README.md` do seu projeto no GitHub, GitLab ou outro repositório Git.
