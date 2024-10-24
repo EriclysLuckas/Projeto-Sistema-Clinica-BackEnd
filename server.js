@@ -2,7 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const baseRoutes = require('./routes/baseRoutes');
 const client = require('./config/database');
-
+const server = require('http');
 // Carregar variáveis de ambiente do arquivo .env
 dotenv.config();
 
@@ -15,6 +15,7 @@ app.use(express.json());
 // Rotas
 app.use('/api', baseRoutes);
 
+
 // Testar conexão com o banco de dados PostgreSQL
 client.query('SELECT NOW()', (err, res) => {
   if (err) {
@@ -24,8 +25,14 @@ client.query('SELECT NOW()', (err, res) => {
   }
 });
 
+
 // Definir a porta do servidor a partir do .env ou usar 3000 por padrão
 const PORT = process.env.PORT || 3000;
+
+// Debug
+app.get('/', (req, res) => {
+  res.send('Welcome');
+});
 
 // Iniciar o servidor
 app.listen(PORT, () => {
