@@ -4,6 +4,8 @@ const usersRoutes = require('./routes/usersRoutes');
 const client = require('./config/database');
 const agendamentosRouter = require('./routes/agendamentoRouter');
 const pacientesRoutes = require('./routes/pacientesRoutes');
+const baseRouter = require('./routes/baseRoutes');
+
 const server = require('http');
 
 // Carregar variáveis de ambiente do arquivo .env
@@ -16,6 +18,7 @@ const app = express();
 app.use(express.json());
 
 // Rotas
+app.use('/api', baseRouter);
 app.use('/api', usersRoutes);
 app.use('/api', agendamentosRouter);
 app.use('/api', pacientesRoutes);
