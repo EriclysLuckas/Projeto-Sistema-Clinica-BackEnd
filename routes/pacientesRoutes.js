@@ -1,19 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const pacienteDados = require('../controllers/pacientesController');
+const pacientesController = require('../controllers/pacientesController');
 
-// Rota GET
-router.get('/getpaciente', pacienteDados.getDados);
-
-// Rota POST
-router.post('/postpaciente', pacienteDados.addDados);
-
-// Rota PUT
-router.put('/putpaciente:id', pacienteDados.updateDados);
-
-// Rota DELETE
-router.delete('/deletepaciente:id', pacienteDados.deleteDados);
-
+router.get('/pacientes', pacientesController.getPacientes);
+router.get('/pacientes/:id', pacientesController.getPacienteById);
+router.post('/pacientes', pacientesController.createPaciente);
+router.put('/pacientes/:id', pacientesController.updatePaciente);
+router.delete('/pacientes/:id', pacientesController.deletePaciente);
 
 module.exports = router;
-

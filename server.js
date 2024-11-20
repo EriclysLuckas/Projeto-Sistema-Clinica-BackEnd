@@ -5,6 +5,7 @@ const client = require('./config/database');
 const agendamentosRouter = require('./routes/agendamentoRouter');
 const pacientesRoutes = require('./routes/pacientesRoutes');
 const baseRouter = require('./routes/baseRoutes');
+const medicosRoutes = require('./routes/medicosRouter');
 
 const server = require('http');
 
@@ -22,6 +23,8 @@ app.use('/api', baseRouter);
 app.use('/api', usersRoutes);
 app.use('/api', agendamentosRouter);
 app.use('/api', pacientesRoutes);
+app.use('/api', medicosRoutes);
+
 
 // Testar conexão com o banco de dados PostgreSQL
 client.query('SELECT NOW()', (err, res) => {

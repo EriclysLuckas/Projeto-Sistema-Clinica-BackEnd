@@ -1,54 +1,100 @@
-let dados = [];
+const pool = require('../config/database');
+const { v4: uuidv4 } = require('uuid');
 
-// solicitação GET
-exports.getDados = (req, res) => {
-    res.json(dados);
-};
-
-// requisição POST
-exports.addDados = (req, res) => {
-    const dadosNovos = req.body;
-
-    // Verificar se existe dados na tabela
-    if (!dadosNovos || Object.keys(dados).length === 0) {
-        return res.status(400).json({message: 'Error: Nenhum dado fornecido na requisição.'});
+// Listar todos os pacientes
+exports.getPacientes = async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM pacientes');
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Erro ao listar pacientes:', error);
+        res.status(500).json({ error: 'Erro ao listar pacientes' });
     }
-
-    // Adiciona dados se não estiver vazia
-    dados.push(dadosNovos);
-    res.status(201).json({message: 'Dados adicionados com sucesso!,', dadosNovos})
-};
- 
-
-// Requisição PUT para atualizar um dado existente pelo ID
-exports.updateDados = (req, res) => {
-   const id = req.params.id;
-   const dadosAtualizados = req.body;
-
-   // Encontrar o índice do dado com o ID especificado
-   const index = dados.findIndex(item => item.id === id);
-
-   if (index === -1) {
-       return res.status(404).json({ message: 'Error: Dado não encontrado.' });
-   }
-
-   // Atualizar o dado no índice encontrado
-   dados[index] = { ...dados[index], ...dadosAtualizados };
-   res.status(200).json({ message: 'Dados atualizados com sucesso!', dados: dados[index] });
 };
 
-// Requisição DELETE para remover um dado existente pelo ID
-exports.deleteDados = (req, res) => {
-   const id = req.params.id;
+// Obter um paciente específico por ID
+exports.getPacienteById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query('SELECT * FROM pacientes WHERE id = $1', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Paciente não encontrado' });
+        }
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error('Erro ao buscar o paciente:', error);
+        res.status(500).json({ error: 'Erro ao buscar o paciente' });
+    }
+};
 
-   // Encontrar o índice do dado com o ID especificado
-   const index = dados.findIndex(item => item.id === id);
+// Criar um novo paciente
+exports.createPaciente = async (req, res) => {
+    const {
+        nome,
+        cpf,
+        data_nascimento,
+        telefone,
+        email,
+        endereco
+    } = req.body;
+    const id = uuidv4();
+    try {
+        const result = await pool.query(
+            `INSERT INTO pacientes (id, nome, cpf, data_nascimento, telefone, email, endereco) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+            [id, nome, cpf, data_nascimento, telefone, email, endereco]
+        );
+        res.status(201).json({ message: 'Paciente criado com sucesso', id: result.rows[0].id });
+    } catch (error) {
+        console.error('Erro ao criar o paciente:', error);
+        res.status(500).json({ error: 'Erro ao criar o paciente' });
+    }
+};
 
-   if (index === -1) {
-       return res.status(404).json({ message: 'Error: Dado não encontrado.' });
-   }
+// Atualizar um paciente pelo ID
+exports.updatePaciente = async (req, res) => {
+    const { id } = req.params;
+    const {
+        nome,
+        cpf,
+        data_nascimento,
+        telefone,
+        email,
+        endereco
+    } = req.body;
+    try {
+        const result = await pool.query(
+            `UPDATE pacientes 
+             SET nome = $1,
+                 cpf = $2,
+                 data_nascimento = $3,
+                 telefone = $4,
+                 email = $5,
+                 endereco = $6
+             WHERE id = $7 RETURNING *`,
+            [nome, cpf, data_nascimento, telefone, email, endereco, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Paciente não encontrado' });
+        }
+        res.status(200).json({ message: 'Paciente atualizado com sucesso', paciente: result.rows[0] });
+    } catch (error) {
+        console.error('Erro ao atualizar o paciente:', error);
+        res.status(500).json({ error: 'Erro ao atualizar o paciente' });
+    }
+};
 
-   // Remover o dado do array
-   const dadoRemovido = dados.splice(index, 1);
-   res.status(200).json({ message: 'Dados removidos com sucesso!', dados: dadoRemovido[0] });
+// Excluir um paciente por ID
+exports.deletePaciente = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query('DELETE FROM pacientes WHERE id = $1 RETURNING *', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Paciente não encontrado' });
+        }
+        res.status(200).json({ message: 'Paciente removido com sucesso', paciente: result.rows[0] });
+    } catch (error) {
+        console.error('Erro ao remover o paciente:', error);
+        res.status(500).json({ error: 'Erro ao remover o paciente' });
+    }
 };
