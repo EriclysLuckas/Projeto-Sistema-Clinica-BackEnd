@@ -2,6 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const usersRoutes = require('./routes/usersRoutes');
 const client = require('./config/database');
+const agendamentosRouter = require('./routes/agendamentoRouter');
+
 
 // Carregar variáveis de ambiente do arquivo .env
 dotenv.config();
@@ -14,6 +16,7 @@ app.use(express.json());
 
 // Rotas
 app.use('/api', usersRoutes);
+app.use('/api', agendamentosRouter);
 
 // Testar conexão com o banco de dados PostgreSQL
 client.query('SELECT NOW()', (err, res) => {
