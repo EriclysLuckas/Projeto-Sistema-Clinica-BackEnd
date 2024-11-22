@@ -20,13 +20,13 @@ const criarUsuario = async (req, res) => {
         return res.status(400).send('Forneça os campos obrigatórios para criação do usuário.');
     }
 
-    if (!['admin', 'medico', 'paciente'].includes(perfil)) {
-        return res.status(400).send('Perfil inválido.');
-    }    
+    // if (!['admin', 'medico', 'paciente'].includes(perfil)) {
+    //     return res.status(400).send('Perfil inválido.');
+    // }    
 
-    if (!CPF.isValid(cpf)) {
-        return res.status(400).send('CPF inválido.');
-    }
+    // if (!CPF.isValid(cpf)) {
+    //     return res.status(400).send('CPF inválido.');
+    // }
 
     if (email && !validator.isEmail(email)) {
         return res.status(400).send('Email inválido.');

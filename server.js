@@ -6,6 +6,7 @@ const agendamentosRouter = require('./routes/agendamentoRouter');
 const pacientesRoutes = require('./routes/pacientesRoutes');
 const baseRouter = require('./routes/baseRoutes');
 const medicosRoutes = require('./routes/medicosRouter');
+const cors = require('cors')
 
 const server = require('http');
 
@@ -18,6 +19,12 @@ const app = express();
 // Middleware para lidar com JSON
 app.use(express.json());
 
+
+app.use(cors({
+  origin: 'http://localhost:5173',  // Permite apenas o frontend em localhost:5173
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],  // Permite esses métodos
+  allowedHeaders: ['Content-Type'],  // Permite cabeçalhos Content-Type
+}));
 // Rotas
 app.use('/api', baseRouter);
 app.use('/api', usersRoutes);
@@ -36,7 +43,7 @@ client.query('SELECT NOW()', (err, res) => {
 });
 
 // Definir a porta do servidor a partir do .env ou usar 3000 por padrão
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 // Iniciar o servidor
 app.listen(PORT, () => {
