@@ -29,20 +29,18 @@ exports.getPacienteById = async (req, res) => {
 
 // Criar um novo paciente
 exports.createPaciente = async (req, res) => {
-    const {
-        nome,
-        cpf,
-        data_nascimento,
-        telefone,
-        email,
-        endereco
-    } = req.body;
-    const id = uuidv4();
+    const { nome, cpf, data_nascimento, telefone, email, endereco, usuario_id } = req.body;
+    const id = uuidv4(); // Gerando o UUID para o paciente
     try {
+        // Verifique se usuario_id foi passado, caso contrário, retorne erro
+        if (!usuario_id) {
+            return res.status(400).json({ error: 'usuario_id é obrigatório' });
+        }
+
         const result = await pool.query(
-            `INSERT INTO pacientes (id, nome, cpf, data_nascimento, telefone, email, endereco) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-            [id, nome, cpf, data_nascimento, telefone, email, endereco]
+            `INSERT INTO pacientes (id, nome, cpf, data_nascimento, telefone, email, endereco, usuario_id) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+            [id, nome, cpf, data_nascimento, telefone, email, endereco, usuario_id]
         );
         res.status(201).json({ message: 'Paciente criado com sucesso', id: result.rows[0].id });
     } catch (error) {

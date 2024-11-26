@@ -30,14 +30,15 @@ exports.getMedicoById = async (req, res) => {
 // Criar um novo médico
 exports.createMedico = async (req, res) => {
     const {
-        usuario_id,
         nome,
         cpf,
         crm,
         especialidade,
         telefone,
         email,
-        endereco_consultorio
+        endereco_consultorio,
+        usuario_id,
+
     } = req.body;
     const id = uuidv4();
     try {
