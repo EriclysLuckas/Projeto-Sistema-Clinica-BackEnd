@@ -32,18 +32,34 @@ exports.getAgendamentoById = async (req, res) => {
 exports.createAgendamento = async (req, res) => {
     const { paciente_id, medico_id, data_hora, notificacao_paciente, notificacao_medico } = req.body;
     const id = uuidv4();
+    
     try {
+        // 1. Verificar se já existe um agendamento para esse médico na mesma data e hora
+        const resultConflito = await pool.query(
+            'SELECT * FROM agendamentos WHERE medico_id = $1 AND data_hora = $2',
+            [medico_id, data_hora]
+        );
+        
+        // Se houver um agendamento conflitante, retornar erro
+        if (resultConflito.rows.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Já existe um agendamento para este médico neste horário.',
+            });
+        }
+
+        // 2. Caso contrário, criar o novo agendamento
         const result = await pool.query(
             'INSERT INTO agendamentos (id, paciente_id, medico_id, data_hora, notificacao_paciente, notificacao_medico) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
             [id, paciente_id, medico_id, data_hora, notificacao_paciente, notificacao_medico]
         );
+        
         res.status(201).json({ message: 'Agendamento criado com sucesso', id: result.rows[0].id });
     } catch (error) {
         console.error('Erro ao criar o agendamento:', error);
         res.status(500).json({ error: 'Erro ao criar o agendamento' });
     }
 };
-
 // Atualizar um agendamento pelo ID
 exports.updateAgendamento = async (req, res) => {
     const { id } = req.params;
